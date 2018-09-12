@@ -1,1 +1,2 @@
-# qlik-model-viewer
+# playground-walkingdead
+Walking Dead playground demo
