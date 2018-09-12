@@ -9,7 +9,4 @@ app.use(express.static(__dirname));
 //   res.sendFile(__dirname + "/main.html");
 // });
 
-app.listen(8000, function(){
-  console.log('listening on port 8000');
-  // open('http://localhost:8000');
-});
+app.listen(process.env.PORT || 5000)
