@@ -3,14 +3,20 @@
   <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="/resources/main.css" media="screen" title="no title" charset="utf-8">
-  </head>
+  </head> 
   <body>
-
-    <div id="chart1"></div>
+    <div id="inputs">
+      Server URL: <input type="text" id="url" value="developer-sense.qlik.com"><br>
+      Prefix: <input type="text" id="prefix" value="anon"><br>
+      App Name: <input type="text" id="app" value="BranchCore.qvf"></br>
+      Secure connection: <input type="checkbox" id="isSecure" checked>
+    </div>
     <div id="chart2"></div>
+    <div id="chart1"></div>
+
     <script src="https://unpkg.com/enigma.js"></script>
     <script src="https://unpkg.com/d3"></script>
-    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://unpkg.com/jquery"></script> 
     <script type="text/javascript" src="/resources/script.js"></script>
   </body>
 </html> 

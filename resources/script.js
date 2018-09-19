@@ -1,44 +1,76 @@
-$.get('https://unpkg.com/enigma.js@2.2.0/schemas/12.34.11.json')
-  .then(schema => {
-    const session = enigma.create({
-      schema,
-      url: 'wss://branch.qlik.com/anon/app/3f3a866b-238f-4d1a-8aeb-81e97756af7a',
-      createSocket: url => new WebSocket(url)
-    });
-    session.open()
-      .then(global => {
-        return global.openDoc('3f3a866b-238f-4d1a-8aeb-81e97756af7a')
-      })
-      .then(app => {
-        app.getAppLayout().then(() =>{
-          var width = document.querySelector("#chart2").clientWidth
-          var height = document.querySelector("#chart2").clientHeight
-          var param={
-            qSyntheticMode:true,
-            qWindowSize:{
-              qcx:width,
-              qcy:height
-            },
-            qCellHeight:20
-          }
-          // console.log(app)
-          app.getTablesAndKeys(param).then((result)=>{
-            var keyToColorDic = [];
-            for(var i=0; i<result.qtr.length; i++){
-              keyToColorDic[result.qtr[i].qName] = [];
+var url, app, prefix,connectionType;
+initialize()
+run()
+
+
+function initialize(){
+  url = $( "#url" ).val();
+  app = $( "#app" ).val();
+  prefix = $( "#prefix" ).val();
+  connectionType = "ws"
+  if ($('#isSecure').is(":checked")){
+    connectionType = "wss"
+  }
+
+  $( "#url,#app,#prefix, #isSecure" ).change(function() {
+    url = $( "#url" ).val();
+    app = $( "#app" ).val();
+    prefix = $( "#prefix" ).val();
+    connectionType = "ws"
+    if ($('#isSecure').is(":checked")){
+      connectionType = "wss"
+    }
+    run();
+  });
+}
+
+function run(){
+  console.log("Connecting to "+connectionType+":"+url+"/"+prefix+". Application id:"+app)
+  $.get('https://unpkg.com/enigma.js@2.2.0/schemas/12.34.11.json')
+    .then(schema => {
+      const session = enigma.create({
+        schema,
+        // url:'wss://playground.qlik.com:443/app/'+app,
+        // url: 'wss://sense-demo-staging.qlik.com/anon/app/9a2471a4-3fab-48bb-9b39-d55e47ca2471' ,
+        url: connectionType+'://'+url+'/'+prefix+'/app/'+app,
+        createSocket: url => new WebSocket(url)
+      });
+      session.open()
+        .then(global => {
+          console.log(global)
+          return global.openDoc('BranchCore.qvf')
+        })
+        .then(app => {
+          app.getAppLayout().then(() =>{
+            var width = document.querySelector("#chart2").clientWidth
+            var height = document.querySelector("#chart2").clientHeight
+            var param={
+              qSyntheticMode:true,
+              qWindowSize:{
+                qcx:width,
+                qcy:height
+              },
+              qCellHeight:20
             }
-            for(var i=0; i<result.qk.length; i++){
-              var tempColor = getRandomColor();
-              for(var j=0; j<result.qk[i].qTables.length; j++){
-                keyToColorDic[result.qk[i].qTables[j]][result.qk[i].qKeyFields[0]]=tempColor;
+            // console.log(app)
+            app.getTablesAndKeys(param).then((result)=>{
+              var keyToColorDic = [];
+              for(var i=0; i<result.qtr.length; i++){
+                keyToColorDic[result.qtr[i].qName] = [];
               }
-            }
-            drawModelViewer(keyToColorDic,result)
-            drawTableViewer(result,app)
-          })
-      })
+              for(var i=0; i<result.qk.length; i++){
+                var tempColor = getRandomColor();
+                for(var j=0; j<result.qk[i].qTables.length; j++){
+                  keyToColorDic[result.qk[i].qTables[j]][result.qk[i].qKeyFields[0]]=tempColor;
+                }
+              }
+              drawModelViewer(keyToColorDic,result)
+              drawTableViewer(result,app)
+            })
+        })
+    })
   })
-})
+}
 
 function getRandomColor() {
   var letters = '0123456789ABCDEF';
@@ -56,9 +88,9 @@ function drawTableViewer(data,app)
     var isKey = false;
     for (var i =0; i<data.qk.length; i++){
       if(data.qk[i].qKeyFields.indexOf(fieldName)>=0){
-          if(data.qk[i].qTables.indexOf(tableName)>=0)
-            isKey = true;
-      }
+         if(data.qk[i].qTables.indexOf(tableName)>=0)
+          isKey = true;
+      } 
     }
     return isKey
   }
@@ -108,7 +140,7 @@ function drawTableViewer(data,app)
       layout.qHyperCube.qDataPages[0].qMatrix.forEach(function(elem){
         tableText += "<tr>"
         elem.forEach(function(field){
-          tableText +="<th>"+field.qText+"</th>"
+          tableText +="<td>"+field.qText+"</td>"
         })
         tableText += "</tr>"      
  })

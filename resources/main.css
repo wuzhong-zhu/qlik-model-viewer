@@ -1,6 +1,13 @@
+html{
+  height: 100%;
+  width: 100%;
+}
+
 body {
-  height: 600px;
-  width: 1000px;
+  margin-left:5%;
+  margin-top:5%;
+  height: 95%;
+  width: 90%;
 }
 p {
   text-align: center;
@@ -27,10 +34,18 @@ li.X {
   background: #eee;
 }
 
+#inputs{
+  width: 250px;
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  z-index: 99;
+  background: white;
+}
+
 #chart1 {
-  margin-left: 5%;
-  margin-bottom: 3%;
-  width: 90%;
+  margin-top: 10px;
+  width: 100%;
   height: 30%;
   overflow-x: scroll;
   overflow-y: scroll;
@@ -38,9 +53,7 @@ li.X {
 }
 
 #chart2 {
-  margin-left: 5%;
-  margin-bottom: 3%;
-  width: 90%;
+  width: 100%;
   height: 70%;
   position: relative;
 }
@@ -58,12 +71,14 @@ table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
+    font-size: 12px;
 }
 
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+    word-wrap: break-word;
 }
 
 tr:nth-child(even) {
